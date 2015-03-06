@@ -55,7 +55,7 @@ int executecommand(char *buffer){
 		case 'F':
 			FREQ = atoi(++buffer);
 			DELAY_MS = modf(FREQ, &DELAY_US);
-			printf(time_buf,"ms:%d,us%d",DELAY_MS,DELAY_US);
+			dtostrf(DELAY_MS,7,3, time_buf);
 			Serial.write(time_buf);
 			return 1;
 	}
