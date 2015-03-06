@@ -13,6 +13,7 @@
 //The setup function is called once at startup of the sketch
 
 #include <Arduino.h>
+//#include <math.h>
 
 const int RED_PIN = 5;
 const int GREEN_PIN = 9;
@@ -26,8 +27,10 @@ int GREEN;
 int BLUE;
 int INTENSITY;
 char BUFFER[5];
-int DELAY_MS=100;
-int DELAY_US=100;
+double DELAY_MS=100;
+double DELAY_US=100;
+double FREQ;
+char time_buf[10];
 
 int executecommand(char *buffer){
   Serial.write(buffer);
@@ -50,8 +53,10 @@ int executecommand(char *buffer){
 			analogWrite(INT_PIN, INTENSITY);
 			return 1;
 		case 'F':
-			DELAY_MS = 500/atoi(++buffer);
-			DELAY_US = 500%atoi(++buffer);
+			FREQ = atoi(++buffer);
+			DELAY_MS = modf(FREQ, &DELAY_US);
+			printf(time_buf,"ms:%d,us%d",DELAY_MS,DELAY_US);
+			Serial.write(time_buf);
 			return 1;
 	}
 	return 0;
