@@ -13,6 +13,7 @@
 //The setup function is called once at startup of the sketch
 
 #include <Arduino.h>
+#include "wiring_private.h"
 //#include <math.h>
 
 const int RED_PIN = 5;
@@ -103,18 +104,21 @@ void setup()
 	  //Set 10 Bit counter to use X4 divisor -> 8kHz
 	  TCCR4B = _BV(CS40)|_BV(CS41);
 
+	  sbi(TCCR4C, COM4D1);
+	  cbi(TCCR4C, COM4D0);
+
 	  Serial.begin(9600);
 	  }
 
-// The loop function is called in an endless loop
 void loop(){
 	while(Serial.available()) readline(Serial.read(), BUFFER, 5);
-	analogWrite(INT_PIN, INTENSITY);
+	cbi(TCCR4C, COM4D0);
+	OCR4D = INTENSITY;	// set pwm duty
 	digitalWrite(LED_TRIG_PIN, HIGH);
 	delay(DELAY_MS);
 	delayMicroseconds(DELAY_US);
-	analogWrite(INT_PIN, 0);
-	digitalWrite(LED_TRIG_PIN, LOW);
+	OCR4D = 0;
+	cbi(TCCR4C, COM4D1);
 	delay(DELAY_MS);
 	delayMicroseconds(DELAY_US);
 	}
