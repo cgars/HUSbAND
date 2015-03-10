@@ -22,9 +22,7 @@ const int BLUE_PIN = 10;
 const int INT_PIN = 6;
 const int STIM_TRIG_PIN = 4;
 const int LED_TRIG_PIN = 13;
-const int LED_TRIG_PIN_PORT = digitalPinToPort(LED_TRIG_PIN);
-const int LED_TRIG_PIN_PORT_OREG = portOutputRegister(LED_TRIG_PIN_PORT);
-const int LED_TRIG_PIN_BIT = digitalPinToBitMask(LED_TRIG_PIN);
+
 
 int RED;
 int GREEN;
@@ -118,10 +116,10 @@ void setup()
 void loop(){
 	while(Serial.available()) readline(Serial.read(), BUFFER, 5);
 	OCR4D = INTENSITY;	// set pwm duty
-	*LED_TRIG_PIN_PORT_OREG &= ~LED_TRIG_PIN_BIT;
+	digitalWrite(LED_TRIG_PIN, HIGH);
 	delayMicroseconds(DELAY_US);
 	OCR4D = 0;
-	*LED_TRIG_PIN_PORT_OREG |= LED_TRIG_PIN_BIT;
+	digitalWrite(LED_TRIG_PIN, LOW);
 	delay(DELAY_MS);
 	delayMicroseconds(DELAY_US);
 	}
