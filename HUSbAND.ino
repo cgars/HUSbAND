@@ -36,6 +36,11 @@ double DELAY_US_D;
 double FREQ;
 char time_buf[10];
 
+uint8_t LED_TRIG_PIN_TIMER;
+uint8_t LED_TRIG_PIN_BIT;
+uint8_t LED_TRIG_PIN_PORT;
+volatile uint8_t *LED_TRIG_PIN_OUT;
+
 int executecommand(char *buffer){
   Serial.write(buffer);
 	switch(buffer[0]){
@@ -110,16 +115,21 @@ void setup()
 
 	  Serial.begin(9600);
 
+	 LED_TRIG_PIN_TIMER = digitalPinToTimer(LED_TRIG_PIN);
+	 LED_TRIG_PIN_BIT = digitalPinToBitMask(LED_TRIG_PIN);
+ 	 LED_TRIG_PIN_PORT = digitalPinToPort(LED_TRIG_PIN);
+ 	 LED_TRIG_PIN_OUT = portOutputRegister(LED_TRIG_PIN_PORT);
 
 	  }
 
 void loop(){
 	while(Serial.available()) readline(Serial.read(), BUFFER, 5);
 	OCR4D = INTENSITY;	// set pwm duty
-	digitalWrite(LED_TRIG_PIN, HIGH);
+	*LED_TRIG_PIN_OUT |= LED_TRIG_PIN_BIT;
+	delay(DELAY_MS);
 	delayMicroseconds(DELAY_US);
 	OCR4D = 0;
-	digitalWrite(LED_TRIG_PIN, LOW);
+	*LED_TRIG_PIN_OUT &= ~LED_TRIG_PIN_BIT;
 	delay(DELAY_MS);
 	delayMicroseconds(DELAY_US);
 	}
