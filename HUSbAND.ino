@@ -102,24 +102,25 @@ void setup()
 	  pinMode(INT_PIN, OUTPUT);
 
 	  //Set 16 Bit counters to Fast PWM 8 bit -> 64Khz pwm
+	  TCCR1A,TCCR1B,TCCR3A,TCCR4B  = 0;
 	  TCCR1A = _BV (WGM10) ;
 	  TCCR1B = _BV(CS10) | _BV(WGM12) ;
 	  TCCR3A = _BV (WGM10) ;
 	  TCCR3B = _BV(CS10) | _BV(WGM12) ;
 
+	  // Get The OUT Register for the LED trigger
+	  LED_TRIG_PIN_BIT = digitalPinToBitMask(LED_TRIG_PIN);
+	  LED_TRIG_PIN_PORT = digitalPinToPort(LED_TRIG_PIN);
+	  LED_TRIG_PIN_OUT = portOutputRegister(LED_TRIG_PIN_PORT);
+
 	  //Set 10 Bit counter to use X4 divisor -> 8kHz
 	  TCCR4B = _BV(CS40)|_BV(CS41);
 
+	  //Connect TCCR4C to connect to OC4A and to clear on compare Match.
 	  sbi(TCCR4C, COM4D1);
 	  cbi(TCCR4C, COM4D0);
 
 	  Serial.begin(9600);
-
-	 LED_TRIG_PIN_TIMER = digitalPinToTimer(LED_TRIG_PIN);
-	 LED_TRIG_PIN_BIT = digitalPinToBitMask(LED_TRIG_PIN);
- 	 LED_TRIG_PIN_PORT = digitalPinToPort(LED_TRIG_PIN);
- 	 LED_TRIG_PIN_OUT = portOutputRegister(LED_TRIG_PIN_PORT);
-
 	  }
 
 void loop(){
