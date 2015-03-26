@@ -19,7 +19,7 @@
 const int RED_PIN = 5;
 const int GREEN_PIN = 9;
 const int BLUE_PIN = 10;
-const int INT_PIN = 6;
+const int INT_PIN = 11;
 const int STIM_TRIG_PIN = 4;
 const int LED_TRIG_PIN = 13;
 
@@ -27,7 +27,7 @@ const int LED_TRIG_PIN = 13;
 int RED;
 int GREEN;
 int BLUE;
-int INTENSITY;
+double INTENSITY = 1;
 char BUFFER[5];
 int DELAY_MS=100;
 int DELAY_US=100;
@@ -46,20 +46,21 @@ int executecommand(char *buffer){
 	switch(buffer[0]){
 		case 'R':
 			RED = atoi(++buffer);
-			analogWrite(RED_PIN, RED);
+			analogWrite(RED_PIN, RED*INTENSITY);
 			return 1;
 		case 'G':
 			GREEN = atoi(++buffer);
-			analogWrite(GREEN_PIN, GREEN);
+			analogWrite(GREEN_PIN, GREEN*INTENSITY);
 			return 1;
 		case 'B':
 			BLUE = atoi(++buffer);
-			analogWrite(BLUE_PIN, BLUE);
+			analogWrite(BLUE_PIN, BLUE*INTENSITY);
 			return 1;
 		case 'I':
-			INTENSITY = atoi(++buffer);
-			digitalWrite(STIM_TRIG_PIN, INTENSITY>0);
-			analogWrite(INT_PIN, INTENSITY);
+			INTENSITY = atof(++buffer);
+			analogWrite(GREEN_PIN, GREEN*INTENSITY);
+			analogWrite(RED_PIN, RED*INTENSITY);
+			analogWrite(BLUE_PIN, BLUE*INTENSITY);
 			return 1;
 		case 'F':
 			FREQ = (double)atoi(++buffer);
@@ -108,29 +109,18 @@ void setup()
 	  TCCR3A = _BV (WGM10) ;
 	  TCCR3B = _BV(CS10) | _BV(WGM12) ;
 
-	  // Get The OUT Register for the LED trigger
-	  LED_TRIG_PIN_BIT = digitalPinToBitMask(LED_TRIG_PIN);
-	  LED_TRIG_PIN_PORT = digitalPinToPort(LED_TRIG_PIN);
-	  LED_TRIG_PIN_OUT = portOutputRegister(LED_TRIG_PIN_PORT);
-
-	  //Set 10 Bit counter to use X4 divisor -> 8kHz
-	  TCCR4B = _BV(CS40)|_BV(CS41);
-
-	  //Connect TCCR4C to connect to OC4A and to clear on compare Match.
-	  sbi(TCCR4C, COM4D1);
-	  cbi(TCCR4C, COM4D0);
 
 	  Serial.begin(9600);
 	  }
 
 void loop(){
 	while(Serial.available()) readline(Serial.read(), BUFFER, 5);
-	OCR4D = INTENSITY;	// set pwm duty
-	*LED_TRIG_PIN_OUT |= LED_TRIG_PIN_BIT;
+	digitalWrite(INT_PIN, HIGH);
+	digitalWrite(LED_TRIG_PIN, HIGH);
 	delay(DELAY_MS);
 	delayMicroseconds(DELAY_US);
-	OCR4D = 0;
-	*LED_TRIG_PIN_OUT &= ~LED_TRIG_PIN_BIT;
+	digitalWrite(INT_PIN, LOW);
+	digitalWrite(LED_TRIG_PIN, LOW);
 	delay(DELAY_MS);
 	delayMicroseconds(DELAY_US);
 	}
