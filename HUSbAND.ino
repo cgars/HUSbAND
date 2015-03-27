@@ -23,18 +23,16 @@ const int INT_PIN = 11;
 const int STIM_TRIG_PIN = 4;
 const int LED_TRIG_PIN = 13;
 
-
 int RED;
 int GREEN;
 int BLUE;
 double INTENSITY = 1;
 char BUFFER[5];
-int DELAY_MS=100;
-int DELAY_US=100;
-double DELAY_MS_D;
-double DELAY_US_D;
 double FREQ;
 char time_buf[10];
+double STEPSIZE = 1./(15000000./1024.);
+int FREQ_COUNT = 1024;
+
 
 uint8_t LED_TRIG_PIN_TIMER;
 uint8_t LED_TRIG_PIN_BIT;
@@ -64,10 +62,9 @@ int executecommand(char *buffer){
 			return 1;
 		case 'F':
 			FREQ = (double)atoi(++buffer);
-			DELAY_US_D = modf(500/FREQ, &DELAY_MS_D)*1000;
-			DELAY_US = DELAY_US_D;
-			DELAY_MS = DELAY_MS_D;
-			if(!DELAY_US)DELAY_US++;
+			FREQ_COUNT = (.5/FREQ)/STEPSIZE;
+			TC4H = FREQ_COUNT >> 8;
+			OCR4A = 0xFF & FREQ_COUNT;
 			return 1;
 	}
 	return 0;
@@ -109,18 +106,17 @@ void setup()
 	  TCCR3A = _BV (WGM10) ;
 	  TCCR3B = _BV(CS10) | _BV(WGM12) ;
 
+	  TCCR4A,TCCR4B,TCCR4C = 0;
+
+	  TCCR4C = _BV(COM4D0);
+	  TCCR4B = _BV(CS43)|_BV(CS41)|_BV(CS40);
+
+	  TC4H = FREQ_COUNT >> 8;
+	  OCR4A = 0xFF & FREQ_COUNT;
 
 	  Serial.begin(9600);
 	  }
 
 void loop(){
 	while(Serial.available()) readline(Serial.read(), BUFFER, 5);
-	digitalWrite(INT_PIN, HIGH);
-	digitalWrite(LED_TRIG_PIN, HIGH);
-	delay(DELAY_MS);
-	delayMicroseconds(DELAY_US);
-	digitalWrite(INT_PIN, LOW);
-	digitalWrite(LED_TRIG_PIN, LOW);
-	delay(DELAY_MS);
-	delayMicroseconds(DELAY_US);
 	}
