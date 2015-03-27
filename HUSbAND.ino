@@ -31,7 +31,7 @@ char BUFFER[5];
 double FREQ;
 char time_buf[10];
 double STEPSIZE = 1./(15000000./1024.);
-int FREQ_COUNT = 1024;
+int FREQ_COUNT = 1023;
 
 
 uint8_t LED_TRIG_PIN_TIMER;
