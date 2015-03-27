@@ -30,7 +30,7 @@ double INTENSITY = 1;
 char BUFFER[5];
 double FREQ;
 char time_buf[10];
-double STEPSIZE = 1./(15000000./256.);
+double STEPSIZE = 1./(15000000./2048.);
 int FREQ_COUNT = 255;
 
 
@@ -63,8 +63,8 @@ int executecommand(char *buffer){
 		case 'F':
 			FREQ = (double)atoi(++buffer);
 			FREQ_COUNT = (.5/FREQ)/STEPSIZE;
-			TC4H = FREQ_COUNT >> 8;
-			OCR4D = 0xFF & FREQ_COUNT;
+			TC4H = FREQ_COUNT>>8;
+			OCR4C = (unsigned char)FREQ_COUNT;
 			return 1;
 	}
 	return 0;
@@ -110,9 +110,13 @@ void setup()
 	  OCR4C = 255;
 
 	  TCCR4C = _BV(COM4D0);
+	  TCCR4A = _BV(COM4A0);
 	  TCCR4B = _BV(CS43)|_BV(CS42);
 
-	  OCR4D = FREQ_COUNT;
+	  TC4H = FREQ_COUNT>>8;
+	  OCR4C = (unsigned char)FREQ_COUNT;
+	  OCR4D = 0;
+	  OCR4A = 0;
 
 	  Serial.begin(9600);
 
