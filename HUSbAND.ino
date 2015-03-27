@@ -19,13 +19,13 @@
 const int RED_PIN = 5;
 const int GREEN_PIN = 9;
 const int BLUE_PIN = 10;
-const int INT_PIN = 11;
+const int INT_PIN = 6;
 const int STIM_TRIG_PIN = 4;
 const int LED_TRIG_PIN = 13;
 
-int RED;
-int GREEN;
-int BLUE;
+int RED = 100;
+int GREEN = 100;
+int BLUE = 100;
 double INTENSITY = 1;
 char BUFFER[5];
 double FREQ;
@@ -64,7 +64,7 @@ int executecommand(char *buffer){
 			FREQ = (double)atoi(++buffer);
 			FREQ_COUNT = (.5/FREQ)/STEPSIZE;
 			TC4H = FREQ_COUNT >> 8;
-			OCR4A = 0xFF & FREQ_COUNT;
+			OCR4D = 0xFF & FREQ_COUNT;
 			return 1;
 	}
 	return 0;
@@ -106,13 +106,13 @@ void setup()
 	  TCCR3A = _BV (WGM10) ;
 	  TCCR3B = _BV(CS10) | _BV(WGM12) ;
 
-	  TCCR4A,TCCR4B,TCCR4C = 0;
+	  TCCR4A,TCCR4B,TCCR4C,TCCR4D = 0;
 
 	  TCCR4C = _BV(COM4D0);
 	  TCCR4B = _BV(CS43)|_BV(CS41)|_BV(CS40);
 
 	  TC4H = FREQ_COUNT >> 8;
-	  OCR4A = 0xFF & FREQ_COUNT;
+	  OCR4D = 0xFF & FREQ_COUNT;
 
 	  Serial.begin(9600);
 	  }
