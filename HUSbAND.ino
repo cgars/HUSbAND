@@ -30,8 +30,8 @@ double INTENSITY = 1;
 char BUFFER[5];
 double FREQ;
 char time_buf[10];
-double STEPSIZE = 1./(15000000./1024.);
-int FREQ_COUNT = 1023;
+double STEPSIZE = 1./(15000000./256.);
+int FREQ_COUNT = 255;
 
 
 uint8_t LED_TRIG_PIN_TIMER;
@@ -100,21 +100,25 @@ void setup()
 	  pinMode(INT_PIN, OUTPUT);
 
 	  //Set 16 Bit counters to Fast PWM 8 bit -> 64Khz pwm
-	  TCCR1A,TCCR1B,TCCR3A,TCCR4B  = 0;
+	  TCCR1A,TCCR1B,TCCR3A,TCCR3B  = 0;
 	  TCCR1A = _BV (WGM10) ;
 	  TCCR1B = _BV(CS10) | _BV(WGM12) ;
 	  TCCR3A = _BV (WGM10) ;
 	  TCCR3B = _BV(CS10) | _BV(WGM12) ;
 
 	  TCCR4A,TCCR4B,TCCR4C,TCCR4D = 0;
+	  OCR4C = 255;
 
 	  TCCR4C = _BV(COM4D0);
-	  TCCR4B = _BV(CS43)|_BV(CS41)|_BV(CS40);
+	  TCCR4B = _BV(CS43)|_BV(CS42);
 
-	  TC4H = FREQ_COUNT >> 8;
-	  OCR4D = 0xFF & FREQ_COUNT;
+	  OCR4D = FREQ_COUNT;
 
 	  Serial.begin(9600);
+
+	  analogWrite(GREEN_PIN, GREEN*INTENSITY);
+	  analogWrite(RED_PIN, RED*INTENSITY);
+	  analogWrite(BLUE_PIN, BLUE*INTENSITY);
 	  }
 
 void loop(){
