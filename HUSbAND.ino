@@ -16,55 +16,59 @@
 #include "wiring_private.h"
 //#include <math.h>
 
-const int RED_PIN = 5;
-const int GREEN_PIN = 9;
-const int BLUE_PIN = 10;
-const int INT_PIN = 6;
+const int RED_PIN = 10;
+const int GREEN_PIN = 5;
+const int BLUE_PIN = 9;
 const int STIM_TRIG_PIN = 4;
-const int LED_TRIG_PIN = 13;
+const int INT_PIN = 6;
+
+uint16_t *GREENR = &OCR3C;
+uint16_t *REDR = &OCR1B;
+uint16_t *BLUER = &OCR1A;
 
 int RED = 100;
 int GREEN = 100;
 int BLUE = 100;
 double INTENSITY = 1;
-char BUFFER[5];
+char BUFFER[6];
 double FREQ;
 char time_buf[10];
 double STEPSIZE = 1./(15000000./2048.);
 int FREQ_COUNT = 255;
-
-
-uint8_t LED_TRIG_PIN_TIMER;
-uint8_t LED_TRIG_PIN_BIT;
-uint8_t LED_TRIG_PIN_PORT;
-volatile uint8_t *LED_TRIG_PIN_OUT;
+unsigned char sreg;
 
 int executecommand(char *buffer){
   Serial.write(buffer);
 	switch(buffer[0]){
 		case 'R':
 			RED = atoi(++buffer);
-			analogWrite(RED_PIN, RED*INTENSITY);
+			*REDR = RED*INTENSITY;
+			//OCR1B =  RED*INTENSITY;
 			return 1;
 		case 'G':
-			GREEN = atoi(++buffer);
-			analogWrite(GREEN_PIN, GREEN*INTENSITY);
+			*GREENR = GREEN*INTENSITY ;
+			//OCR3C = GREEN*INTENSITY ;
 			return 1;
 		case 'B':
 			BLUE = atoi(++buffer);
-			analogWrite(BLUE_PIN, BLUE*INTENSITY);
+			*BLUER = BLUE*INTENSITY;
+			//OCR1A = BLUE*INTENSITY;
 			return 1;
 		case 'I':
 			INTENSITY = atof(++buffer);
-			analogWrite(GREEN_PIN, GREEN*INTENSITY);
-			analogWrite(RED_PIN, RED*INTENSITY);
-			analogWrite(BLUE_PIN, BLUE*INTENSITY);
+			*GREENR = GREEN*INTENSITY ;
+			*REDR = RED*INTENSITY;
+			*BLUER = BLUE*INTENSITY;
+			digitalWrite(STIM_TRIG_PIN, INTENSITY>0);
 			return 1;
 		case 'F':
 			FREQ = (double)atoi(++buffer);
 			FREQ_COUNT = (.5/FREQ)/STEPSIZE;
+			sreg = SREG;
+			cli();
 			TC4H = FREQ_COUNT>>8;
 			OCR4C = (unsigned char)FREQ_COUNT;
+			SREG = sreg;
 			return 1;
 	}
 	return 0;
@@ -97,32 +101,35 @@ void setup()
 	  pinMode(RED_PIN, OUTPUT);
 	  pinMode(GREEN_PIN, OUTPUT);
 	  pinMode (BLUE_PIN, OUTPUT);
-	  pinMode(INT_PIN, OUTPUT);
 
-	  //Set 16 Bit counters to Fast PWM 8 bit -> 64Khz pwm
+	  //Set counters 1 to Fast PWM 8 bit -> 64Khz pwm
 	  TCCR1A,TCCR1B,TCCR3A,TCCR3B  = 0;
-	  TCCR1A = _BV (WGM10) ;
-	  TCCR1B = _BV(CS10) | _BV(WGM12) ;
-	  TCCR3A = _BV (WGM10) ;
-	  TCCR3B = _BV(CS10) | _BV(WGM12) ;
+	  TCCR1A = _BV (WGM10)|_BV (WGM11)|_BV(COM1A1)|_BV(COM1B1);
+	  TCCR1B = _BV(CS10) | _BV(WGM12);
+	  TCCR3A = _BV (WGM30)|_BV (WGM31)|_BV(COM3C1);
+	  TCCR3B = _BV(CS30) | _BV(WGM32);
 
+
+	  //Setup Counter4
 	  TCCR4A,TCCR4B,TCCR4C,TCCR4D = 0;
-	  OCR4C = 255;
+	  TCCR4C = _BV(COM4D0);//connect to output pin (arduino dp 6)
+	  TCCR4A = _BV(COM4A0);//connect to output pin (arduino dp 13)
+	  TCCR4B = _BV(CS43)|_BV(CS42);//set prescaler to 2048
 
-	  TCCR4C = _BV(COM4D0);
-	  TCCR4A = _BV(COM4A0);
-	  TCCR4B = _BV(CS43)|_BV(CS42);
-
+	  //OCR4C determines how high the counter counts until reset
+	  sreg = SREG;
+	  cli();
 	  TC4H = FREQ_COUNT>>8;
 	  OCR4C = (unsigned char)FREQ_COUNT;
+	  SREG = sreg
 	  OCR4D = 0;
 	  OCR4A = 0;
 
-	  Serial.begin(9600);
+	  Serial.begin(19200);
 
-	  analogWrite(GREEN_PIN, GREEN*INTENSITY);
-	  analogWrite(RED_PIN, RED*INTENSITY);
-	  analogWrite(BLUE_PIN, BLUE*INTENSITY);
+	  *GREENR = GREEN*INTENSITY ;
+	  *REDR = RED*INTENSITY;
+	  *BLUER = BLUE*INTENSITY;
 	  }
 
 void loop(){
