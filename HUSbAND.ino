@@ -37,14 +37,18 @@ double STEPSIZE = 1./(15000000./2048.);
 int FREQ_COUNT = 255;
 unsigned char sreg;
 
-int PRESCALEFACTORS[6] = {128,256,512,1024,2048,4096,8192};
-unsigned char PRESCALES[6] = { _BV(CS43),
-							   _BV(CS43)|_BV(CS40),
-							   _BV(CS43)|_BV(CS41),
-							   _BV(CS43)|_BV(CS41)|_BV(CS40),
-				    		   _BV(CS43)|_BV(CS42),
-							   _BV(CS43)|_BV(CS42)|_BV(CS40),
-							   _BV(CS43)|_BV(CS42)|_BV(CS40)};
+int PRESCALEFACTORS[10] = {16,32,64,128,256,512,1024,2048,4096,8192};
+unsigned char PRESCALES[10] = { _BV(CS42)|_BV(CS40),
+							    _BV(CS42)|_BV(CS41),
+							    _BV(CS42)|_BV(CS41)|_BV(CS40),
+							    _BV(CS43),
+							    _BV(CS43)|_BV(CS40),
+							    _BV(CS43)|_BV(CS41),
+							    _BV(CS43)|_BV(CS41)|_BV(CS40),
+				    		    _BV(CS43)|_BV(CS42),
+							    _BV(CS43)|_BV(CS42)|_BV(CS40),
+							    _BV(CS43)|_BV(CS42)|_BV(CS40)
+								};
 
 int executecommand(char *buffer){
   //Serial.write(buffer);
@@ -72,10 +76,14 @@ int executecommand(char *buffer){
 			FREQ = (double)atoi(++buffer);
 			//Find the lowest prescaler with which we can build FREQ
 			int counter = 0;
+			char charbuffer[5];
 			for (int *ptr = PRESCALEFACTORS; *ptr; ptr++){
 				if ((1./(15000000. / *ptr)*1024)>(.5/FREQ)){
 					TCCR4B = PRESCALES[counter];
 					STEPSIZE = 1./(15000000. / *ptr);
+					dtostrf(*ptr,4,0,charbuffer);
+					charbuffer[5] = '\r';
+					Serial.write(charbuffer);
 					break;
 				}
 				counter ++;
