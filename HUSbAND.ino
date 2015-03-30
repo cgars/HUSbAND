@@ -45,6 +45,7 @@ int executecommand(char *buffer){
 			*REDR = RED*INTENSITY;
 			return 1;
 		case 'G':
+			GREEN = atoi(++buffer);
 			*GREENR = GREEN*INTENSITY ;
 			return 1;
 		case 'B':
