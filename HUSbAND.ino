@@ -22,15 +22,15 @@ const int BLUE_PIN = 9;
 const int STIM_TRIG_PIN = 4;
 const int INT_PIN = 6;
 
-uint16_t *GREENR = &OCR3C;
-uint16_t *REDR = &OCR1B;
-uint16_t *BLUER = &OCR1A;
+volatile uint16_t *GREENR = &OCR3A;
+volatile uint16_t *REDR = &OCR1B;
+volatile uint16_t *BLUER = &OCR1A;
 
 int RED = 100;
 int GREEN = 100;
 int BLUE = 100;
 double INTENSITY = 1;
-char BUFFER[6];
+char BUFFER[10];
 double FREQ;
 char time_buf[10];
 double STEPSIZE = 1./(15000000./2048.);
@@ -43,16 +43,13 @@ int executecommand(char *buffer){
 		case 'R':
 			RED = atoi(++buffer);
 			*REDR = RED*INTENSITY;
-			//OCR1B =  RED*INTENSITY;
 			return 1;
 		case 'G':
 			*GREENR = GREEN*INTENSITY ;
-			//OCR3C = GREEN*INTENSITY ;
 			return 1;
 		case 'B':
 			BLUE = atoi(++buffer);
 			*BLUER = BLUE*INTENSITY;
-			//OCR1A = BLUE*INTENSITY;
 			return 1;
 		case 'I':
 			INTENSITY = atof(++buffer);
@@ -101,12 +98,13 @@ void setup()
 	  pinMode(RED_PIN, OUTPUT);
 	  pinMode(GREEN_PIN, OUTPUT);
 	  pinMode (BLUE_PIN, OUTPUT);
+	  pinMode (INT_PIN, OUTPUT);
 
 	  //Set counters 1 to Fast PWM 8 bit -> 64Khz pwm
 	  TCCR1A,TCCR1B,TCCR3A,TCCR3B  = 0;
 	  TCCR1A = _BV (WGM10)|_BV (WGM11)|_BV(COM1A1)|_BV(COM1B1);
 	  TCCR1B = _BV(CS10) | _BV(WGM12);
-	  TCCR3A = _BV (WGM30)|_BV (WGM31)|_BV(COM3C1);
+	  TCCR3A = _BV (WGM30)|_BV (WGM31)|_BV(COM3A1);
 	  TCCR3B = _BV(CS30) | _BV(WGM32);
 
 
@@ -121,11 +119,11 @@ void setup()
 	  cli();
 	  TC4H = FREQ_COUNT>>8;
 	  OCR4C = (unsigned char)FREQ_COUNT;
-	  SREG = sreg
+	  SREG = sreg;
 	  OCR4D = 0;
 	  OCR4A = 0;
 
-	  Serial.begin(19200);
+	  Serial.begin(115200);
 
 	  *GREENR = GREEN*INTENSITY ;
 	  *REDR = RED*INTENSITY;
@@ -133,5 +131,5 @@ void setup()
 	  }
 
 void loop(){
-	while(Serial.available()) readline(Serial.read(), BUFFER, 5);
+	while(Serial.available()) readline(Serial.read(), BUFFER, 6);
 	}
