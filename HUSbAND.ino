@@ -38,7 +38,7 @@ int FREQ_COUNT = 255;
 unsigned char sreg;
 
 int executecommand(char *buffer){
-  Serial.write(buffer);
+  //Serial.write(buffer);
 	switch(buffer[0]){
 		case 'R':
 			RED = atoi(++buffer);
