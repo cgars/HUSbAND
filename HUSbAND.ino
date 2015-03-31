@@ -88,7 +88,7 @@ int executecommand(char *buffer){
 				}
 				counter ++;
 			}
-			FREQ_COUNT = (.5/FREQ)/STEPSIZE;
+			FREQ_COUNT = (.5/FREQ)/STEPSIZE-1;
 			sreg = SREG;
 			cli();
 			TC4H = FREQ_COUNT>>8;
