@@ -21,6 +21,7 @@ const int GREEN_PIN = 5;
 const int BLUE_PIN = 9;
 const int STIM_TRIG_PIN = 4;
 const int INT_PIN = 6;
+const int CLOCK = 16000000;
 
 volatile uint16_t *GREENR = &OCR3A;
 volatile uint16_t *REDR = &OCR1B;
@@ -76,14 +77,10 @@ int executecommand(char *buffer){
 			FREQ = (double)atoi(++buffer);
 			//Find the lowest prescaler with which we can build FREQ
 			int counter = 0;
-			char charbuffer[5];
 			for (int *ptr = PRESCALEFACTORS; *ptr; ptr++){
-				if ((1./(15000000. / *ptr)*1024)>(.5/FREQ)){
+				if ((1./(CLOCK / *ptr)*1024)>(.5/FREQ)){
 					TCCR4B = PRESCALES[counter];
-					STEPSIZE = 1./(15000000. / *ptr);
-					dtostrf(*ptr,4,0,charbuffer);
-					charbuffer[5] = '\r';
-					Serial.write(charbuffer);
+					STEPSIZE = 1./(CLOCK / *ptr);
 					break;
 				}
 				counter ++;
@@ -128,7 +125,7 @@ void setup()
 	  pinMode (BLUE_PIN, OUTPUT);
 	  pinMode (INT_PIN, OUTPUT);
 
-	  //Set counters 1 to Fast PWM 8 bit -> 64Khz pwm
+	  //Set counters 1 to Phase correct PWM 10 bit -> 64Khz pwm
 	  TCCR1A,TCCR1B,TCCR3A,TCCR3B  = 0;
 	  TCCR1A = _BV (WGM10)|_BV (WGM11)|_BV(COM1A1)|_BV(COM1B1);
 	  TCCR1B = _BV(CS10) | _BV(WGM12);
