@@ -21,7 +21,7 @@ const int GREEN_PIN = 5;
 const int BLUE_PIN = 9;
 const int STIM_TRIG_PIN = 4;
 const int INT_PIN = 6;
-const int CLOCK = 16000000;
+const double CLOCK = 16000000;
 
 volatile uint16_t *GREENR = &OCR3A;
 volatile uint16_t *REDR = &OCR1B;
