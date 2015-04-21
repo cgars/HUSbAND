@@ -56,21 +56,42 @@ int executecommand(char *buffer){
 	switch(buffer[0]){
 		case 'R':
 			RED = atoi(++buffer);
-			*REDR = RED*INTENSITY;
+			if(RED == 0){
+				cbi(TCCR1A, COM1B1);
+				Serial.write("Red 0");
+			}
+			else{
+				sbi(TCCR1A, COM1B1);
+			}
+			*REDR = RED * INTENSITY;
 			return 1;
 		case 'G':
 			GREEN = atoi(++buffer);
-			*GREENR = GREEN*INTENSITY ;
+			if(GREEN == 0){
+				Serial.write("Green 0");
+				cbi(TCCR3A, COM3A1);
+			}
+			else{
+				sbi(TCCR3A, COM3A1);
+			}
+			*GREENR = GREEN * INTENSITY ;
 			return 1;
 		case 'B':
 			BLUE = atoi(++buffer);
-			*BLUER = BLUE*INTENSITY;
+			if(BLUE == 0){
+				Serial.write("Blue 0");
+				cbi(TCCR1A, COM1A1);
+			}
+			else{
+				sbi(TCCR1A, COM1A1);
+			}
+			*BLUER = BLUE * INTENSITY;
 			return 1;
 		case 'I':
 			INTENSITY = atof(++buffer);
-			*GREENR = GREEN*INTENSITY ;
-			*REDR = RED*INTENSITY;
-			*BLUER = BLUE*INTENSITY;
+			*GREENR = GREEN * INTENSITY ;
+			*REDR = RED * INTENSITY;
+			*BLUER = BLUE * INTENSITY;
 			digitalWrite(STIM_TRIG_PIN, INTENSITY>0);
 			return 1;
 		case 'F':
