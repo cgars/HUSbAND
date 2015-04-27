@@ -32,24 +32,22 @@ int GREEN = 100;
 int BLUE = 100;
 double INTENSITY = 1;
 char BUFFER[10];
-double FREQ;
+double FREQ=100;
 char time_buf[10];
-double STEPSIZE = 1./(15000000./2048.);
-int FREQ_COUNT = 255;
+const int CARRIERFREQ = 16000000/256;
+int FREQCOUNTER = 0;
+int MAXFREQCOUNT = 0;
 unsigned char sreg;
 
-int PRESCALEFACTORS[10] = {16,32,64,128,256,512,1024,2048,4096,8192};
-unsigned char PRESCALES[10] = { _BV(CS42)|_BV(CS40),
-							    _BV(CS42)|_BV(CS41),
-							    _BV(CS42)|_BV(CS41)|_BV(CS40),
-							    _BV(CS43),
-							    _BV(CS43)|_BV(CS40),
-							    _BV(CS43)|_BV(CS41),
-							    _BV(CS43)|_BV(CS41)|_BV(CS40),
-				    		    _BV(CS43)|_BV(CS42),
-							    _BV(CS43)|_BV(CS42)|_BV(CS40),
-							    _BV(CS43)|_BV(CS42)|_BV(CS40)
-								};
+ISR(TIMER1_COMPB_vect){
+	  FREQCOUNTER++;
+	  if(FREQCOUNTER>MAXFREQCOUNT){
+		  digitalWrite(6, !digitalRead(6));
+		  digitalWrite(13, !digitalRead(13));
+		  FREQCOUNTER=0;
+	  }
+}
+
 
 int executecommand(char *buffer){
   //Serial.write(buffer);
@@ -96,22 +94,7 @@ int executecommand(char *buffer){
 			return 1;
 		case 'F':
 			FREQ = (double)atoi(++buffer);
-			//Find the lowest prescaler with which we can build FREQ
-			int counter = 0;
-			for (int *ptr = PRESCALEFACTORS; *ptr; ptr++){
-				if ((1./(CLOCK / *ptr)*1024)>(.5/FREQ)){
-					TCCR4B = PRESCALES[counter];
-					STEPSIZE = 1./(CLOCK / *ptr);
-					break;
-				}
-				counter ++;
-			}
-			FREQ_COUNT = (.5/FREQ)/STEPSIZE-1;
-			sreg = SREG;
-			cli();
-			TC4H = FREQ_COUNT>>8;
-			OCR4C = (unsigned char)FREQ_COUNT;
-			SREG = sreg;
+			MAXFREQCOUNT = (CARRIERFREQ/MAXFREQCOUNT)/2;
 			return 1;
 	}
 	return 0;
@@ -146,28 +129,20 @@ void setup()
 	  pinMode (BLUE_PIN, OUTPUT);
 	  pinMode (INT_PIN, OUTPUT);
 
-	  //Set counters 1 to Phase correct PWM 10 bit -> 64Khz pwm
+	  //Set counters 1,3 to Fast PWM 8 bit -> 62Khz
 	  TCCR1A,TCCR1B,TCCR3A,TCCR3B  = 0;
-	  TCCR1A = _BV (WGM10)|_BV (WGM11)|_BV(COM1A1)|_BV(COM1B1);
+	  TCCR1A = _BV (WGM10)|_BV(COM1A1)|_BV(COM1B1);
 	  TCCR1B = _BV(CS10) | _BV(WGM12);
-	  TCCR3A = _BV (WGM30)|_BV (WGM31)|_BV(COM3A1);
+	  TCCR3A = _BV (WGM30)|_BV(COM3A1);
 	  TCCR3B = _BV(CS30) | _BV(WGM32);
 
 
 	  //Setup Counter4
-	  TCCR4A,TCCR4B,TCCR4C,TCCR4D = 0;
-	  TCCR4C = _BV(COM4D0);//connect to output pin (arduino dp 6)
-	  TCCR4A = _BV(COM4A0);//connect to output pin (arduino dp 13)
-	  TCCR4B = _BV(CS43)|_BV(CS42);//set prescaler to 2048
+	  pinMode(13, OUTPUT);
+	  pinMode(6, OUTPUT);
 
-	  //OCR4C determines how high the counter counts until reset
-	  sreg = SREG;
-	  cli();
-	  TC4H = FREQ_COUNT>>8;
-	  OCR4C = (unsigned char)FREQ_COUNT;
-	  SREG = sreg;
-	  OCR4D = 0;
-	  OCR4A = 0;
+	  sei();
+
 
 	  Serial.begin(115200);
 
