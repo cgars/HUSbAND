@@ -162,11 +162,11 @@ void setup()
 
 	  FREQ_BIT = digitalPinToBitMask(FREQ_PIN);
 	  FREQ_PORT = digitalPinToPort(FREQ_PIN);
-	  FREQ_OUT = portOutputRegister(FREQ_PIN);
+	  FREQ_OUT = portOutputRegister(FREQ_PORT);
 
 	  LEDT_BIT = digitalPinToBitMask(LED_TRIG_PIN);
 	  LEDT_PORT = digitalPinToPort(LED_TRIG_PIN);
-	  LEDT_OUT = portOutputRegister(LED_TRIG_PIN);
+	  LEDT_OUT = portOutputRegister(LEDT_PORT);
 
 	  }
 
