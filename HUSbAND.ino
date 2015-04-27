@@ -33,10 +33,10 @@ int BLUE = 100;
 double INTENSITY = 1;
 char BUFFER[10];
 double FREQ=100;
-char time_buf[10];
+char str_buf[10];
 const int CARRIERFREQ = 16000000/256;
-int FREQCOUNTER = 0;
-int MAXFREQCOUNT = 312;
+volatile double FREQCOUNTER = 0;
+volatile double MAXFREQCOUNT = 50000;
 unsigned char sreg;
 
 ISR(TIMER1_COMPB_vect){
@@ -95,6 +95,8 @@ int executecommand(char *buffer){
 		case 'F':
 			FREQ = (double)atoi(++buffer);
 			MAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
+			dtostrf(MAXFREQCOUNT,5,1,str_buf);
+			Serial.write(str_buf);
 			return 1;
 	}
 	return 0;
