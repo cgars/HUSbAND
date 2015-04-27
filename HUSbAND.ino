@@ -36,7 +36,7 @@ double FREQ=100;
 char time_buf[10];
 const int CARRIERFREQ = 16000000/256;
 int FREQCOUNTER = 0;
-int MAXFREQCOUNT = 0;
+int MAXFREQCOUNT = 312;
 unsigned char sreg;
 
 ISR(TIMER1_COMPB_vect){
@@ -94,7 +94,7 @@ int executecommand(char *buffer){
 			return 1;
 		case 'F':
 			FREQ = (double)atoi(++buffer);
-			MAXFREQCOUNT = (CARRIERFREQ/MAXFREQCOUNT)/2;
+			MAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
 			return 1;
 	}
 	return 0;
@@ -135,7 +135,7 @@ void setup()
 	  TCCR1B = _BV(CS10) | _BV(WGM12);
 	  TCCR3A = _BV (WGM30)|_BV(COM3A1);
 	  TCCR3B = _BV(CS30) | _BV(WGM32);
-
+	  TIMSK1 = _BV(OCIE1B);
 
 	  //Setup Counter4
 	  pinMode(13, OUTPUT);
