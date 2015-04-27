@@ -20,8 +20,9 @@ const int RED_PIN = 10;
 const int GREEN_PIN = 5;
 const int BLUE_PIN = 9;
 const int STIM_TRIG_PIN = 4;
-const int INT_PIN = 6;
+const int FREQ_PIN = 6;
 const double CLOCK = 16000000;
+const int LED_TRIG_PIN = 13;
 
 volatile uint16_t *GREENR = &OCR3A;
 volatile uint16_t *REDR = &OCR1B;
@@ -34,16 +35,24 @@ double INTENSITY = 1;
 char BUFFER[10];
 double FREQ=100;
 char str_buf[10];
-const int CARRIERFREQ = 16000000/256;
+const double CARRIERFREQ = 16000000/256;
 volatile double FREQCOUNTER = 0;
 volatile double MAXFREQCOUNT = 50000;
 unsigned char sreg;
 
+uint8_t FREQ_BIT;
+uint8_t FREQ_PORT;
+volatile uint8_t *FREQ_OUT;
+
+uint8_t LEDT_BIT;
+uint8_t LEDT_PORT;
+volatile uint8_t *LEDT_OUT;
+
 ISR(TIMER1_COMPB_vect){
 	  FREQCOUNTER++;
 	  if(FREQCOUNTER>MAXFREQCOUNT){
-		  digitalWrite(6, !digitalRead(6));
-		  digitalWrite(13, !digitalRead(13));
+		  *FREQ_OUT ^= FREQ_BIT;
+		  *LEDT_OUT ^= LEDT_BIT;
 		  FREQCOUNTER=0;
 	  }
 }
@@ -129,7 +138,6 @@ void setup()
 	  pinMode(RED_PIN, OUTPUT);
 	  pinMode(GREEN_PIN, OUTPUT);
 	  pinMode (BLUE_PIN, OUTPUT);
-	  pinMode (INT_PIN, OUTPUT);
 
 	  //Set counters 1,3 to Fast PWM 8 bit -> 62Khz
 	  TCCR1A,TCCR1B,TCCR3A,TCCR3B  = 0;
@@ -151,6 +159,15 @@ void setup()
 	  *GREENR = GREEN*INTENSITY ;
 	  *REDR = RED*INTENSITY;
 	  *BLUER = BLUE*INTENSITY;
+
+	  FREQ_BIT = digitalPinToBitMask(FREQ_PIN);
+	  FREQ_PORT = digitalPinToPort(FREQ_PIN);
+	  FREQ_OUT = portOutputRegister(FREQ_PIN);
+
+	  LEDT_BIT = digitalPinToBitMask(LED_TRIG_PIN);
+	  LEDT_PORT = digitalPinToPort(LED_TRIG_PIN);
+	  LEDT_OUT = portOutputRegister(LED_TRIG_PIN);
+
 	  }
 
 void loop(){
