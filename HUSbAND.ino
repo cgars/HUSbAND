@@ -56,7 +56,22 @@ ISR(TIMER1_COMPB_vect){
 		  FREQCOUNTER=0;
 	  }
 }
-
+ISR(TIMER1_COMPA_vect){
+	  FREQCOUNTER++;
+	  if(FREQCOUNTER>MAXFREQCOUNT){
+		  *FREQ_OUT ^= FREQ_BIT;
+		  *LEDT_OUT ^= LEDT_BIT;
+		  FREQCOUNTER=0;
+	  }
+}
+ISR(TIMER3_COMPA_vect){
+	  FREQCOUNTER++;
+	  if(FREQCOUNTER>MAXFREQCOUNT){
+		  *FREQ_OUT ^= FREQ_BIT;
+		  *LEDT_OUT ^= LEDT_BIT;
+		  FREQCOUNTER=0;
+	  }
+}
 
 int executecommand(char *buffer){
   //Serial.write(buffer);
@@ -70,6 +85,10 @@ int executecommand(char *buffer){
 			else{
 				sbi(TCCR1A, COM1B1);
 			}
+			if(RED>BLUE and RED>GREEN) {
+				TIMSK1 = _BV(OCIE1B);
+				TIMSK3 = 0 ;
+			}
 			*REDR = RED * INTENSITY;
 			return 1;
 		case 'G':
@@ -81,6 +100,10 @@ int executecommand(char *buffer){
 			else{
 				sbi(TCCR3A, COM3A1);
 			}
+			if(GREEN>BLUE> and GREEN>RED) {
+				TIMSK3 = _BV(OCIE3A);
+				TIMSK1 = 0 ;
+			}
 			*GREENR = GREEN * INTENSITY ;
 			return 1;
 		case 'B':
@@ -91,6 +114,10 @@ int executecommand(char *buffer){
 			}
 			else{
 				sbi(TCCR1A, COM1A1);
+			}
+			if(BLUE>GREEN and BLUE>RED) {
+				TIMSK1 = _BV(OCIE1A);
+				TIMSK3 = 0 ;
 			}
 			*BLUER = BLUE * INTENSITY;
 			return 1;
@@ -139,12 +166,13 @@ void setup()
 	  pinMode(GREEN_PIN, OUTPUT);
 	  pinMode (BLUE_PIN, OUTPUT);
 
-	  //Set counters 1,3 to Fast PWM 8 bit -> 62Khz
+	  //Set counters 1 and 3 to Fast PWM 8 bit -> 62Khz and connect the OCR to pins
 	  TCCR1A,TCCR1B,TCCR3A,TCCR3B  = 0;
 	  TCCR1A = _BV (WGM10)|_BV(COM1A1)|_BV(COM1B1);
 	  TCCR1B = _BV(CS10) | _BV(WGM12);
 	  TCCR3A = _BV (WGM30)|_BV(COM3A1);
 	  TCCR3B = _BV(CS30) | _BV(WGM32);
+	  //Activate compare match Interupt for OCR1B (Red)
 	  TIMSK1 = _BV(OCIE1B);
 
 	  //Setup Counter4
@@ -152,7 +180,6 @@ void setup()
 	  pinMode(6, OUTPUT);
 
 	  sei();
-
 
 	  Serial.begin(115200);
 
