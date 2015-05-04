@@ -100,7 +100,7 @@ int executecommand(char *buffer){
 			else{
 				sbi(TCCR3A, COM3A1);
 			}
-			if(GREEN>BLUE> and GREEN>RED) {
+			if(GREEN>BLUE and GREEN>RED) {
 				TIMSK3 = _BV(OCIE3A);
 				TIMSK1 = 0 ;
 			}
@@ -130,9 +130,9 @@ int executecommand(char *buffer){
 		case 'F':
 			FREQ = (double)atoi(++buffer);
 			MAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
+			digitalWrite(STIM_TRIG_PIN, !digitalRead(STIM_TRIG_PIN));
 			dtostrf(MAXFREQCOUNT,5,1,str_buf);
 			Serial.write(str_buf);
-			digitalWrite(STIM_TRIG_PIN, !digitalRead(STIM_TRIG_PIN));
 			return 1;
 	}
 	return 0;
