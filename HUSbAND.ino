@@ -37,7 +37,7 @@ double FREQ=100;
 char str_buf[10];
 const double CARRIERFREQ = 16000000/256;
 volatile double FREQCOUNTER = 0;
-volatile double MAXFREQCOUNT = 50000;
+volatile double MAXFREQCOUNT = 31;
 unsigned char sreg;
 
 uint8_t FREQ_BIT;
@@ -126,13 +126,13 @@ int executecommand(char *buffer){
 			*GREENR = GREEN * INTENSITY ;
 			*REDR = RED * INTENSITY;
 			*BLUER = BLUE * INTENSITY;
-			digitalWrite(STIM_TRIG_PIN, INTENSITY>0);
 			return 1;
 		case 'F':
 			FREQ = (double)atoi(++buffer);
 			MAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
 			dtostrf(MAXFREQCOUNT,5,1,str_buf);
 			Serial.write(str_buf);
+			digitalWrite(STIM_TRIG_PIN, !digitalRead(STIM_TRIG_PIN));
 			return 1;
 	}
 	return 0;
