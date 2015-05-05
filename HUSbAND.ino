@@ -48,11 +48,14 @@ uint8_t LEDT_BIT;
 uint8_t LEDT_PORT;
 volatile uint8_t *LEDT_OUT;
 
+int NEWMAXFREQCOUNT = 31;
+
 ISR(TIMER1_COMPB_vect){
 	  FREQCOUNTER++;
 	  if(FREQCOUNTER>MAXFREQCOUNT){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  *LEDT_OUT ^= LEDT_BIT;
+		  MAXFREQCOUNT = NEWMAXFREQCOUNT;
 		  FREQCOUNTER=0;
 	  }
 }
@@ -129,7 +132,7 @@ int executecommand(char *buffer){
 			return 1;
 		case 'F':
 			FREQ = (double)atoi(++buffer);
-			MAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
+			NEWMAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
 			digitalWrite(STIM_TRIG_PIN, !digitalRead(STIM_TRIG_PIN));
 			dtostrf(MAXFREQCOUNT,5,1,str_buf);
 			Serial.write(str_buf);
