@@ -28,9 +28,9 @@ volatile uint16_t *GREENR = &OCR3A;
 volatile uint16_t *REDR = &OCR1B;
 volatile uint16_t *BLUER = &OCR1A;
 
-int RED = 100;
-int GREEN = 100;
-int BLUE = 100;
+int RED = 255;
+int GREEN = 120;
+int BLUE = 71;
 double INTENSITY = 1;
 char BUFFER[10];
 double FREQ=100;
