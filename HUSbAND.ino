@@ -39,6 +39,7 @@ char BUFFER[10];
 char str_buf[10];
 const double CARRIERFREQ = 16000000/256;//PWM Carrier frequency 62500 Hz
 volatile double FREQCOUNTER = 0;
+double FREQ;
 /*
  * MAXFREQCOUNT determines the Stimulation frequency. The timer/counter with the highest
  * duty cycle is allowed to compare match MAXFREQCOUNT times before the
