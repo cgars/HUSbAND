@@ -16,6 +16,7 @@
 #include "wiring_private.h"
 //#include <math.h>
 
+//Hardware Mappings
 const int RED_PIN = 10;
 const int GREEN_PIN = 5;
 const int BLUE_PIN = 9;
@@ -24,32 +25,47 @@ const int FREQ_PIN = 6;
 const double CLOCK = 16000000;
 const int LED_TRIG_PIN = 13;
 
+//Registers for the leds of different colors
 volatile uint16_t *GREENR = &OCR3A;
 volatile uint16_t *REDR = &OCR1B;
 volatile uint16_t *BLUER = &OCR1A;
 
+//Initial values
 int RED = 255;
 int GREEN = 120;
 int BLUE = 71;
 double INTENSITY = 1;
 char BUFFER[10];
-double FREQ=100;
 char str_buf[10];
-const double CARRIERFREQ = 16000000/256;
+const double CARRIERFREQ = 16000000/256;//PWM Carrier frequency 62500 Hz
 volatile double FREQCOUNTER = 0;
-volatile double MAXFREQCOUNT = 31;
-unsigned char sreg;
+/*
+ * MAXFREQCOUNT determines the Stimulation frequency. The timer/counter with the highest
+ * duty cycle is allowed to compare match MAXFREQCOUNT times before the
+ * Stimulation is toggled.
+ */
+volatile double MAXFREQCOUNT = 31.; //~1kHz
 
+unsigned char sreg;
 uint8_t FREQ_BIT;
 uint8_t FREQ_PORT;
 volatile uint8_t *FREQ_OUT;
-
 uint8_t LEDT_BIT;
 uint8_t LEDT_PORT;
 volatile uint8_t *LEDT_OUT;
 
-int NEWMAXFREQCOUNT = 31;
+int NEWMAXFREQCOUNT = 31; // Used tu update the stimulation frequency
 
+/* Interupt Service Routines
+ * The ISR of the timer with the highest pwm duty cycle is executed
+ * each time a compare match interupt has been triggerd by the responsible
+ * Timer/Counter (see above for which T/C is which led). In case we increase
+ * the FREQCOUNTER by one.
+ *   If FREQCOUNTER is above THE MAXFRECCOUNT we need to toggle the output
+ * (switch LEDs on or off as well as the trigger).
+ *   After the toggle (and only then) we can also change the stimulation
+ * frequency if a change is needed by updating the MAXFREQCOUNTER
+ */
 ISR(TIMER1_COMPB_vect){
 	  FREQCOUNTER++;
 	  if(FREQCOUNTER>MAXFREQCOUNT){
@@ -78,11 +94,18 @@ ISR(TIMER3_COMPA_vect){
 	  }
 }
 
+/**
+ * This function changes register values according to the command given
+ * in the buffer.
+ * buffer[0] is expected to be either R,G,B,I,F followed by numerical values
+ * that are to be written to the registers.
+ */
 int executecommand(char *buffer){
   //Serial.write(buffer);
 	switch(buffer[0]){
 		case 'R':
 			RED = atoi(++buffer);
+			//in case the value is zero we disconnect the counter from the pin
 			if(RED == 0){
 				cbi(TCCR1A, COM1B1);
 				Serial.write("Red 0");
@@ -91,6 +114,15 @@ int executecommand(char *buffer){
 				sbi(TCCR1A, COM1B1);
 			}
 			if(RED>BLUE and RED>GREEN) {
+				/**
+				* In case red is the maximum value this ensures that the
+				* Interrupt Mask Register of the "RED" counter (TIMSK1) is
+				* modified such that the Compare B Match interrupt is enabled.
+				* This ensures that frequency changes to happen only after a
+				* duty cycle is complete ensuring that frequcny changes do not
+				* interupt duty cycles and therby lead to a
+				* hypothetical brightness changes.
+				*/
 				TIMSK1 = _BV(OCIE1B);
 				TIMSK3 = 0 ;
 			}
@@ -143,13 +175,19 @@ int executecommand(char *buffer){
 	return 0;
 }
 
+/*
+ * Read in date from Serial char by char
+ * \n is ignored
+ * \r triggers execution
+ * Other characters are inserted into the buffer
+ */
 int readline(int readch, char *buffer, int len)
 {
   static int pos = 0;
   int rpos;
   if (readch > 0) {
     switch (readch) {
-      case '\n': \
+      case '\n':
         break;
       case '\r':
         rpos = pos;
@@ -203,5 +241,6 @@ void setup()
 	  }
 
 void loop(){
+	//Listen to the serial port
 	while(Serial.available()) readline(Serial.read(), BUFFER, 6);
 	}
