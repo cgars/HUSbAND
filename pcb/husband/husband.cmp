@@ -1,0 +1,269 @@
+Cmp-Mod V01 Created by Cvpcb 0.201504211001+5616~22~ubuntu14.04.1-product   date = Sun 26 Apr 2015 15:08:12 CEST
+
+BeginCmp
+TimeStamp = /5538CCD4;
+Reference = P1;
+ValeurCmp = TRIG1;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = /5537FFC0;
+Reference = P2;
+ValeurCmp = PWR;
+IdModule  = Connect:bornier2;
+EndCmp
+
+BeginCmp
+TimeStamp = /55378093;
+Reference = P3;
+ValeurCmp = CONN_02X08;
+IdModule  = myPrints:Buchsenleiste;
+EndCmp
+
+BeginCmp
+TimeStamp = /5538C232;
+Reference = P4;
+ValeurCmp = CONN_02X08;
+IdModule  = myPrints:Buchsenleiste;
+EndCmp
+
+BeginCmp
+TimeStamp = /55377CE1;
+Reference = Q1;
+ValeurCmp = BC817-40;
+IdModule  = myPrints:Transistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /55377CC2;
+Reference = Q2;
+ValeurCmp = BC817-40;
+IdModule  = myPrints:Transistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /55377CF3;
+Reference = Q3;
+ValeurCmp = BC817-40;
+IdModule  = myPrints:Transistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /55377CEA;
+Reference = Q4;
+ValeurCmp = BC817-40;
+IdModule  = myPrints:Transistor;
+EndCmp
+
+BeginCmp
+TimeStamp = /553CEC37;
+Reference = R1;
+ValeurCmp = R90;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /553CEE56;
+Reference = R2;
+ValeurCmp = R90;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /553CEEC4;
+Reference = R3;
+ValeurCmp = R90;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /5538E0B4;
+Reference = R4;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /553914A8;
+Reference = R5;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391D9A;
+Reference = R6;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391662;
+Reference = R7;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /5539169B;
+Reference = R8;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391EB2;
+Reference = R9;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /553916CB;
+Reference = R10;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391998;
+Reference = R11;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391F9E;
+Reference = R12;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391A58;
+Reference = R13;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391AA5;
+Reference = R14;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55392170;
+Reference = R15;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391AED;
+Reference = R16;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /553917AF;
+Reference = R17;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391E4C;
+Reference = R18;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391809;
+Reference = R19;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391860;
+Reference = R20;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391F34;
+Reference = R21;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /553918BA;
+Reference = R22;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391B5F;
+Reference = R23;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /553921D0;
+Reference = R24;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391BBB;
+Reference = R25;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391BFF;
+Reference = R26;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55392240;
+Reference = R27;
+ValeurCmp = 91;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55391CAD;
+Reference = R28;
+ValeurCmp = 43;
+IdModule  = Resistors_ThroughHole:Resistor_Horizontal_RM10mm;
+EndCmp
+
+BeginCmp
+TimeStamp = /55377C44;
+Reference = U1;
+ValeurCmp = ArdinoMicro;
+IdModule  = myPrints:ArduinoMicro;
+EndCmp
+
+BeginCmp
+TimeStamp = /553CD1FC;
+Reference = U2;
+ValeurCmp = AD5206;
+IdModule  = myPrints:AD5206;
+EndCmp
+
+EndListe

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<export version="D">
+  <design>
+    <source>/home/garbers/workspace/HUSbAND/pcb/husband.sch</source>
+    <date>Mi 22 Apr 2015 11:25:55 CEST</date>
+    <tool>Eeschema 0.201504211001+5616~22~ubuntu14.04.1-product</tool>
+    <sheet number="1" name="/" tstamps="/">
+      <title_block>
+        <title>husband</title>
+        <company/>
+        <rev/>
+        <date>22 apr 2015</date>
+        <source>husband.sch</source>
+        <comment number="1" value=""/>
+        <comment number="2" value=""/>
+        <comment number="3" value=""/>
+        <comment number="4" value=""/>
+      </title_block>
+    </sheet>
+  </design>
+  <components>
+    <comp ref="R1">
+      <value>R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM25mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>55376F28</tstamp>
+    </comp>
+    <comp ref="R2">
+      <value>R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM25mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>553770E4</tstamp>
+    </comp>
+    <comp ref="R3">
+      <value>R</value>
+      <footprint>Resistors_ThroughHole:Resistor_Horizontal_RM25mm</footprint>
+      <libsource lib="device" part="R"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>55377125</tstamp>
+    </comp>
+    <comp ref="P1">
+      <value>CONN_01X02</value>
+      <libsource lib="conn" part="CONN_01X02"/>
+      <sheetpath names="/" tstamps="/"/>
+      <tstamp>5537717B</tstamp>
+    </comp>
+  </components>
+  <libparts>
+    <libpart lib="device" part="R">
+      <description>Resistor</description>
+      <footprints>
+        <fp>R_*</fp>
+        <fp>Resistor_*</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">R</field>
+        <field name="Value">R</field>
+      </fields>
+      <pins>
+        <pin num="1" name="~" type="passive"/>
+        <pin num="2" name="~" type="passive"/>
+      </pins>
+    </libpart>
+    <libpart lib="conn" part="CONN_01X02">
+      <footprints>
+        <fp>Pin_Header_Straight_1X02</fp>
+        <fp>Pin_Header_Angled_1X02</fp>
+        <fp>Socket_Strip_Straight_1X02</fp>
+        <fp>Socket_Strip_Angled_1X02</fp>
+      </footprints>
+      <fields>
+        <field name="Reference">P</field>
+        <field name="Value">CONN_01X02</field>
+      </fields>
+      <pins>
+        <pin num="1" name="P1" type="power_in"/>
+        <pin num="2" name="P2" type="power_out"/>
+      </pins>
+    </libpart>
+  </libparts>
+  <libraries>
+    <library logical="device">
+      <uri>/usr/share/kicad/library/device.lib</uri>
+    </library>
+    <library logical="conn">
+      <uri>/usr/share/kicad/library/conn.lib</uri>
+    </library>
+  </libraries>
+  <nets>
+    <net code="1" name="GND">
+      <node ref="R1" pin="2"/>
+      <node ref="R2" pin="2"/>
+      <node ref="R3" pin="2"/>
+      <node ref="P1" pin="1"/>
+    </net>
+    <net code="2" name="Net-(P1-Pad2)">
+      <node ref="R2" pin="1"/>
+      <node ref="R3" pin="1"/>
+      <node ref="P1" pin="2"/>
+      <node ref="R1" pin="1"/>
+    </net>
+  </nets>
+</export>
