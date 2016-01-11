@@ -1,8 +1,11 @@
 --
 HUSbAND -  High freqUency StimulAtioN Device
 -------------
+
 Is a Ardoino micro based stimulation eyglass. It is used for high precission stimulation with light flickering at different frequencies.
 This repsoitory contains (or will contain)
 * The firmware for the arduino 
 * The schemata for the eypieces and the controll board
 * PCB Designs for the eypieces and the controll board
+
+[![Build Status](https://travis-ci.org/cgars/HUSbAND.svg?branch=master)](https://travis-ci.org/cgars/HUSbAND)
