@@ -1,0 +1,216 @@
+EESchema Schematic File Version 2
+LIBS:led_board-rescue
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:led_board-cache
+EELAYER 25 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L CONN_02X08 P1
+U 1 1 5538B64C
+P 4300 3200
+F 0 "P1" H 4300 3650 50  0000 C CNN
+F 1 "CONN_02X08" V 4300 3200 50  0000 C CNN
+F 2 "myPrints:Buchsenleiste" H 4300 2000 60  0001 C CNN
+F 3 "" H 4300 2000 60  0000 C CNN
+	1    4300 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED_RCBG-RESCUE-led_board D1
+U 1 1 5538B6A8
+P 3300 2850
+F 0 "D1" H 3300 2450 50  0000 C CNN
+F 1 "LED_BCRG" V 3750 2850 50  0000 C CNN
+F 2 "myPrints:RGB_LED_BCRG" H 3300 2800 50  0001 C CNN
+F 3 "" H 3300 2800 50  0000 C CNN
+	1    3300 2850
+	-1   0    0    1   
+$EndComp
+$Comp
+L LED_RCBG-RESCUE-led_board D2
+U 1 1 5538B8A7
+P 3300 3550
+F 0 "D2" H 3300 3200 50  0000 C CNN
+F 1 "LED_BCRG" V 3750 3550 50  0000 C CNN
+F 2 "myPrints:RGB_LED_BCRG" H 3300 3500 50  0001 C CNN
+F 3 "" H 3300 3500 50  0000 C CNN
+	1    3300 3550
+	-1   0    0    1   
+$EndComp
+$Comp
+L LED_RCBG-RESCUE-led_board D4
+U 1 1 5538B8D3
+P 5200 3550
+F 0 "D4" H 5200 3900 50  0000 C CNN
+F 1 "LED_BCRG" V 5650 3550 50  0000 C CNN
+F 2 "myPrints:RGB_LED_BCRG" H 5200 3500 50  0001 C CNN
+F 3 "" H 5200 3500 50  0000 C CNN
+	1    5200 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED_RCBG-RESCUE-led_board D3
+U 1 1 5538B925
+P 5200 2850
+F 0 "D3" H 5200 3250 50  0000 C CNN
+F 1 "LED_BCRG" V 5650 2800 50  0000 C CNN
+F 2 "myPrints:RGB_LED_BCRG" H 5200 2800 50  0001 C CNN
+F 3 "" H 5200 2800 50  0000 C CNN
+	1    5200 2850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4050 2850 4000 2850
+Wire Wire Line
+	4000 2850 4000 2650
+Wire Wire Line
+	4000 2650 3600 2650
+Wire Wire Line
+	4050 3050 3700 3050
+Wire Wire Line
+	3700 3050 3700 2850
+Wire Wire Line
+	3700 2850 3600 2850
+Wire Wire Line
+	4050 3150 3600 3150
+Wire Wire Line
+	3600 3150 3600 3050
+Wire Wire Line
+	4050 3250 3600 3250
+Wire Wire Line
+	3600 3250 3600 3350
+Wire Wire Line
+	4050 3450 3600 3450
+Wire Wire Line
+	3600 3450 3600 3550
+Wire Wire Line
+	4050 3550 3750 3550
+Wire Wire Line
+	3750 3550 3750 3750
+Wire Wire Line
+	3750 3750 3600 3750
+Wire Wire Line
+	3000 2500 3000 3900
+Wire Wire Line
+	3000 3900 3900 3900
+Wire Wire Line
+	3900 3900 3900 3350
+Wire Wire Line
+	3900 3350 4050 3350
+Wire Wire Line
+	4550 2850 4650 2850
+Wire Wire Line
+	4650 2850 4650 2650
+Wire Wire Line
+	4650 2650 4900 2650
+Wire Wire Line
+	4550 3050 4800 3050
+Wire Wire Line
+	4800 3050 4800 2850
+Wire Wire Line
+	4800 2850 4900 2850
+Wire Wire Line
+	4550 3150 4900 3150
+Wire Wire Line
+	4900 3150 4900 3050
+Wire Wire Line
+	4550 3250 4900 3250
+Wire Wire Line
+	4900 3250 4900 3350
+Wire Wire Line
+	4550 3450 4900 3450
+Wire Wire Line
+	4900 3450 4900 3550
+Wire Wire Line
+	4550 3550 4550 3750
+Wire Wire Line
+	4550 3750 4900 3750
+Wire Wire Line
+	4550 2950 4600 2950
+Wire Wire Line
+	4600 2950 4600 2500
+Wire Wire Line
+	4600 2500 5500 2500
+Wire Wire Line
+	5500 2500 5500 3900
+Wire Wire Line
+	4550 3350 4650 3350
+Wire Wire Line
+	4650 3350 4650 3900
+Wire Wire Line
+	4650 3900 5500 3900
+Wire Wire Line
+	4050 2950 3900 2950
+Wire Wire Line
+	3900 2950 3900 2500
+Wire Wire Line
+	3900 2500 3000 2500
+Connection ~ 3000 3550
+Connection ~ 3000 2850
+Connection ~ 5500 3550
+Connection ~ 5500 2850
+$Comp
+L GND #PWR01
+U 1 1 5538BC31
+P 3000 3150
+F 0 "#PWR01" H 3000 2900 50  0001 C CNN
+F 1 "GND" H 3000 3000 50  0000 C CNN
+F 2 "" H 3000 3150 60  0000 C CNN
+F 3 "" H 3000 3150 60  0000 C CNN
+	1    3000 3150
+	1    0    0    -1  
+$EndComp
+Connection ~ 3000 3150
+$Comp
+L GND #PWR?
+U 1 1 5538E122
+P 5500 3100
+F 0 "#PWR?" H 5500 2850 50  0001 C CNN
+F 1 "GND" H 5500 2950 50  0000 C CNN
+F 2 "" H 5500 3100 60  0000 C CNN
+F 3 "" H 5500 3100 60  0000 C CNN
+	1    5500 3100
+	1    0    0    -1  
+$EndComp
+Connection ~ 5500 3100
+$EndSCHEMATC

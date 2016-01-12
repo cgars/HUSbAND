@@ -1,0 +1,38 @@
+Cmp-Mod V01 Created by Cvpcb 0.201504211001+5616~22~ubuntu14.04.1-product   date = Thu 23 Apr 2015 14:05:00 CEST
+
+BeginCmp
+TimeStamp = /5538B6A8;
+Reference = D1;
+ValeurCmp = LED_BCRG;
+IdModule  = myPrints:RGB_LED_BCRG;
+EndCmp
+
+BeginCmp
+TimeStamp = /5538B8A7;
+Reference = D2;
+ValeurCmp = LED_BCRG;
+IdModule  = myPrints:RGB_LED_BCRG;
+EndCmp
+
+BeginCmp
+TimeStamp = /5538B925;
+Reference = D3;
+ValeurCmp = LED_BCRG;
+IdModule  = myPrints:RGB_LED_BCRG;
+EndCmp
+
+BeginCmp
+TimeStamp = /5538B8D3;
+Reference = D4;
+ValeurCmp = LED_BCRG;
+IdModule  = myPrints:RGB_LED_BCRG;
+EndCmp
+
+BeginCmp
+TimeStamp = /5538B64C;
+Reference = P1;
+ValeurCmp = CONN_02X08;
+IdModule  = myPrints:Buchsenleiste;
+EndCmp
+
+EndListe
