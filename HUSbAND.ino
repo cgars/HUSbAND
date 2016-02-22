@@ -55,11 +55,11 @@ uint8_t LEDT_BIT;
 uint8_t LEDT_PORT;
 volatile uint8_t *LEDT_OUT;
 
-int NEWMAXFREQCOUNT = 31; // Used tu update the stimulation frequency
+int NEWMAXFREQCOUNT = 31; // Used to update the stimulation frequency
 
-/* Interupt Service Routines
+/* Interrupt Service Routines
  * The ISR of the timer with the highest pwm duty cycle is executed
- * each time a compare match interupt has been triggerd by the responsible
+ * each time a compare match interrupt has been triggered by the responsible
  * Timer/Counter (see above for which T/C is which led). In case we increase
  * the FREQCOUNTER by one.
  *   If FREQCOUNTER is above THE MAXFRECCOUNT we need to toggle the output
@@ -120,8 +120,8 @@ int executecommand(char *buffer){
 				* Interrupt Mask Register of the "RED" counter (TIMSK1) is
 				* modified such that the Compare B Match interrupt is enabled.
 				* This ensures that frequency changes to happen only after a
-				* duty cycle is complete ensuring that frequcny changes do not
-				* interupt duty cycles and therby lead to a
+				* duty cycle is complete ensuring that frequency changes do not
+				* interrupt duty cycles and thereby lead to a
 				* hypothetical brightness changes.
 				*/
 				TIMSK1 = _BV(OCIE1B);
@@ -216,7 +216,7 @@ void setup()
 	  TCCR1B = _BV(CS10) | _BV(WGM12);
 	  TCCR3A = _BV (WGM30)|_BV(COM3A1);
 	  TCCR3B = _BV(CS30) | _BV(WGM32);
-	  //Activate compare match Interupt for OCR1B (Red)
+	  //Activate compare match Interrupt for OCR1B (Red)
 	  TIMSK1 = _BV(OCIE1B);
 
 	  //Setup Counter4
