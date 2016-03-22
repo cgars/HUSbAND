@@ -16,6 +16,7 @@
 #include "wiring_private.h"
 //#include <math.h>
 
+//Hardware Mappings
 const int RED_PIN = 10;
 const int GREEN_PIN = 5;
 const int BLUE_PIN = 9;
@@ -24,37 +25,37 @@ const int FREQ_PIN = 6;
 const double CLOCK = 16000000;
 const int LED_TRIG_PIN = 13;
 
+//Registers for the leds of different colors
 volatile uint16_t *GREENR = &OCR3A;
 volatile uint16_t *REDR = &OCR1B;
 volatile uint16_t *BLUER = &OCR1A;
 
+//Initial values
 int RED = 255;
 int GREEN = 120;
 int BLUE = 71;
 double INTENSITY = 1;
 char BUFFER[10];
-double FREQ=100;
 char str_buf[10];
-const double CARRIERFREQ = 16000000/256;
+const double CARRIERFREQ = 16000000/256;//PWM Carrier frequency 62500 Hz
 volatile double FREQCOUNTER = 0;
-volatile double MAXFREQCOUNTS[2] = {1562, 31};//{31,62};
-volatile int MAXFREQINDEX = 0;
-volatile int MAXFREQCOUNT = 31;
-volatile int STIM_COUNTER = 0;
-volatile int F_ONE_MAX = 125000;
-int ISI;
-int NEWMAXFREQCOUNT;
+double FREQ;
+/*
+ * MAXFREQCOUNT determines the Stimulation frequency. The timer/counter with the highest
+ * duty cycle is allowed to compare match MAXFREQCOUNT times before the
+ * Stimulation is toggled.
+ */
+volatile double MAXFREQCOUNT = 31.; //~1kHz
 
 unsigned char sreg;
-
 uint8_t FREQ_BIT;
 uint8_t FREQ_PORT;
 volatile uint8_t *FREQ_OUT;
-
 uint8_t LEDT_BIT;
 uint8_t LEDT_PORT;
 volatile uint8_t *LEDT_OUT;
 
+int NEWMAXFREQCOUNT = 31; // Used to update the stimulation frequency
 
 /* Interrupt Service Routines
  * The ISR of the timer with the highest pwm duty cycle is executed
@@ -68,47 +69,31 @@ volatile uint8_t *LEDT_OUT;
  */
 ISR(TIMER1_COMPB_vect){
 	  FREQCOUNTER++;
-	  STIM_COUNTER++;
 	  if(FREQCOUNTER>MAXFREQCOUNT){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  *LEDT_OUT ^= LEDT_BIT;
+		  MAXFREQCOUNT = NEWMAXFREQCOUNT;
 		  FREQCOUNTER=0;
-		  if(STIM_COUNTER>F_ONE_MAX){
-			  MAXFREQINDEX=1;
-			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
-			  STIM_COUNTER=0;
-		  }
 	  }
 }
 ISR(TIMER1_COMPA_vect){
 	  FREQCOUNTER++;
-	  STIM_COUNTER++;
 	  if(FREQCOUNTER>MAXFREQCOUNT){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  *LEDT_OUT ^= LEDT_BIT;
+		  MAXFREQCOUNT = NEWMAXFREQCOUNT;
 		  FREQCOUNTER=0;
-		  if(STIM_COUNTER>F_ONE_MAX){
-			  MAXFREQINDEX=1;
-			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
-			  STIM_COUNTER = 0;
-		  }
 	  }
 }
 ISR(TIMER3_COMPA_vect){
 	  FREQCOUNTER++;
-	  STIM_COUNTER++;
 	  if(FREQCOUNTER>MAXFREQCOUNT){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  *LEDT_OUT ^= LEDT_BIT;
+		  MAXFREQCOUNT = NEWMAXFREQCOUNT;
 		  FREQCOUNTER=0;
-		  if(STIM_COUNTER>F_ONE_MAX){
-			  MAXFREQINDEX=1;
-			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
-			  STIM_COUNTER = 0;
-		  }
 	  }
 }
-
 
 /**
  * This function changes register values according to the command given
@@ -121,9 +106,13 @@ int executecommand(char *buffer){
 	switch(buffer[0]){
 		case 'R':
 			RED = atoi(++buffer);
+			//in case the value is zero we disconnect the counter from the pin
 			if(RED == 0){
 				cbi(TCCR1A, COM1B1);
 				Serial.write("Red 0");
+			}
+			else{
+				sbi(TCCR1A, COM1B1);
 			}
 			if(RED>BLUE and RED>GREEN) {
 				/**
@@ -146,7 +135,9 @@ int executecommand(char *buffer){
 				Serial.write("Green 0");
 				cbi(TCCR3A, COM3A1);
 			}
-
+			else{
+				sbi(TCCR3A, COM3A1);
+			}
 			if(GREEN>BLUE and GREEN>RED) {
 				TIMSK3 = _BV(OCIE3A);
 				TIMSK1 = 0 ;
@@ -158,6 +149,9 @@ int executecommand(char *buffer){
 			if(BLUE == 0){
 				Serial.write("Blue 0");
 				cbi(TCCR1A, COM1A1);
+			}
+			else{
+				sbi(TCCR1A, COM1A1);
 			}
 			if(BLUE>GREEN and BLUE>RED) {
 				TIMSK1 = _BV(OCIE1A);
@@ -175,40 +169,15 @@ int executecommand(char *buffer){
 			FREQ = (double)atoi(++buffer);
 			NEWMAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
 			digitalWrite(STIM_TRIG_PIN, !digitalRead(STIM_TRIG_PIN));
-			//dtostrf(MAXFREQCOUNT,5,1,str_buf);
-			//Serial.write(str_buf);
-			MAXFREQCOUNTS[0] = FREQ ;
+			dtostrf(MAXFREQCOUNT,5,1,str_buf);
+			Serial.write(str_buf);
 			return 1;
-		case 'H':
-			FREQ = (double)atoi(++buffer);
-			NEWMAXFREQCOUNT = (CARRIERFREQ/FREQ)/2;
-			digitalWrite(STIM_TRIG_PIN, !digitalRead(STIM_TRIG_PIN));
-			//dtostrf(MAXFREQCOUNT,5,1,str_buf);
-			//Serial.write(str_buf);
-			MAXFREQCOUNTS[1] = FREQ ;
-			return 1;
-		case 'S':
-			sbi(TCCR1A, COM1A1);
-			sbi(TCCR3A, COM3A1);
-			sbi(TCCR1A, COM1B1);
-			STIM_COUNTER = 0;
-			MAXFREQCOUNT = MAXFREQCOUNTS[0];
-			MAXFREQINDEX = 0;
-			return 1;
-		case 'X':
-			cbi(TCCR1A, COM1A1);
-			cbi(TCCR3A, COM3A1);
-			cbi(TCCR1A, COM1B1);
-			return 1;
-		case 'T':
-			ISI = atoi(++buffer);
-			F_ONE_MAX = ISI*(CARRIERFREQ/1000.);
 	}
 	return 0;
 }
 
 /*
- * Read in data from Serial char by char
+ * Read in date from Serial char by char
  * \n is ignored
  * \r triggers execution
  * Other characters are inserted into the buffer
@@ -219,7 +188,7 @@ int readline(int readch, char *buffer, int len)
   int rpos;
   if (readch > 0) {
     switch (readch) {
-      case '\n': \
+      case '\n':
         break;
       case '\r':
         rpos = pos;
@@ -247,7 +216,7 @@ void setup()
 	  TCCR1B = _BV(CS10) | _BV(WGM12);
 	  TCCR3A = _BV (WGM30)|_BV(COM3A1);
 	  TCCR3B = _BV(CS30) | _BV(WGM32);
-	  //Activate compare match Interupt for OCR1B (Red)
+	  //Activate compare match Interrupt for OCR1B (Red)
 	  TIMSK1 = _BV(OCIE1B);
 
 	  //Setup Counter4
@@ -273,5 +242,6 @@ void setup()
 	  }
 
 void loop(){
+	//Listen to the serial port
 	while(Serial.available()) readline(Serial.read(), BUFFER, 6);
 	}
