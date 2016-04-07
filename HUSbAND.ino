@@ -37,13 +37,13 @@ int FREQ=100;
 char str_buf[10];
 const double CARRIERFREQ = 16000000/1024;
 volatile unsigned long int FREQCOUNTER = 0;
-volatile double MAXFREQCOUNTS[2] = {(CARRIERFREQ/100)/2, (CARRIERFREQ/500)/2};//{31,62};
-volatile int MAXFREQINDEX = 0;
+double MAXFREQCOUNTS[2] = {(CARRIERFREQ/100)/2, (CARRIERFREQ/500)/2};//{31,62};
+int MAXFREQINDEX = 0;
 volatile unsigned long int MAXFREQCOUNT = (CARRIERFREQ/500)/2;
 volatile unsigned long int STIM_COUNTER = 0;
-volatile unsigned long int F_ONE_MAX = 15625;
+unsigned long int F_ONE_MAX = 15625;
 unsigned int ISI;
-volatile unsigned long int NEWMAXFREQCOUNT;
+unsigned long int NEWMAXFREQCOUNT;
 
 unsigned char sreg;
 
@@ -58,7 +58,7 @@ volatile uint8_t *LEDT_OUT;
 
 /* Interrupt Service Routines
  * The ISR of the timer with the highest pwm duty cycle is executed
- * each time a compare match interrupt has been triggered by the responsible
+ * each time a compare match interrupt has been triggered by the respective
  * Timer/Counter (see above for which T/C is which led). In case we increase
  * the FREQCOUNTER by one.
  * If FREQCOUNTER is above THE MAXFRECCOUNT the output Freq needs to be
@@ -74,7 +74,7 @@ ISR(TIMER1_COMPB_vect){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  FREQCOUNTER=0;
 		  if((STIM_COUNTER>F_ONE_MAX)&&((*FREQ_OUT)==FREQ_BIT)){
-			  MAXFREQINDEX=1;
+			  MAXFREQINDEX=1;//in this setting the frequency switch happens just once
 			  //MAXFREQINDEX^=1;
 			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
 			  STIM_COUNTER=0;
@@ -115,10 +115,15 @@ ISR(TIMER3_COMPA_vect){
 
 
 /**
- * This function changes register values according to the command given
- * in the buffer.
- * buffer[0] is expected to be either R,G,B,I,F followed by numerical values
- * that are to be written to the registers.
+ * This function controls the led flickering
+ * buffer[0] is expected to be either R,G,B,I,F,H,S,X,T
+ * fellowd by either some value (RGBIFT) or nothing
+ * R,G,B: controls the duty cycle of either the Red,Green or Blue leds
+ *  The duty cycle is a 10bit unsigned integer (0-1023)
+ * F,H: are the two frequencies used on top of the 15kHz carrier frequency
+ * S: Starts the experiment
+ * X: Stops the experiment
+ * T: controls the interstimulus interval-> the time between frequency switches
  */
 int executecommand(char *buffer){
   //Serial.write(buffer);

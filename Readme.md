@@ -17,12 +17,11 @@ The device can be used by wrtiting a command strings to the serial port emulated
 
 Command Letter | Values | Function
 ------------ | -------------|-------------
-R|0-254|Red leds
-G|0-254|Green leds
-B|0-254|Blue leds
-I|0-254|Overall intensity
-F|0-99999|Frequency1
-H|0-99999|Frequency2
+R|0-1023|Red leds
+G|0-1023|Green leds
+B|0-1023|Blue leds
+F|0-15kHZ|Frequency1
+H|0-15kHz|Frequency2
 T|0-99999|Time in ms between onset of freq1 and freq2
 S||Start the Device
 X||Stop the Device
