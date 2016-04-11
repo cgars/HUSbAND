@@ -35,10 +35,12 @@ double INTENSITY = 1;
 char SERIAL_BUFFER[10];
 int FREQ=100;
 char str_buf[10];
+bool EXPERIMENT = false;
 const double CARRIERFREQ = 16000000/1024;
-volatile unsigned long int FREQCOUNTER = 0;
+
 double MAXFREQCOUNTS[2] = {(CARRIERFREQ/100)/2, (CARRIERFREQ/500)/2};//{31,62};
 int MAXFREQINDEX = 0;
+volatile unsigned long int FREQCOUNTER = 0;
 volatile unsigned long int MAXFREQCOUNT = (CARRIERFREQ/500)/2;
 volatile unsigned long int STIM_COUNTER = 0;
 unsigned long int F_ONE_MAX = 15625;
@@ -73,12 +75,13 @@ ISR(TIMER1_COMPB_vect){
 	  if(FREQCOUNTER>MAXFREQCOUNT){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  FREQCOUNTER=0;
-		  if((STIM_COUNTER>F_ONE_MAX)&&((*FREQ_OUT)==FREQ_BIT)){
+		  if((STIM_COUNTER>F_ONE_MAX) && ((*FREQ_OUT)==FREQ_BIT) && EXPERIMENT){
 			  MAXFREQINDEX=1;//in this setting the frequency switch happens just once
 			  //MAXFREQINDEX^=1;
 			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
 			  STIM_COUNTER=0;
 			  *LEDT_OUT ^= LEDT_BIT;
+			  EXPERIMENT = false;
 		  }
 	  }
 }
@@ -88,12 +91,13 @@ ISR(TIMER1_COMPA_vect){
 	  if(FREQCOUNTER>MAXFREQCOUNT){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  FREQCOUNTER=0;
-		  if(((STIM_COUNTER>F_ONE_MAX)&&((*FREQ_OUT)==FREQ_BIT))){
+		  if((STIM_COUNTER>F_ONE_MAX) && ((*FREQ_OUT)==FREQ_BIT) && EXPERIMENT){
 			  MAXFREQINDEX=1;
 			  //MAXFREQINDEX^=1;
 			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
 			  STIM_COUNTER = 0;
 			  *LEDT_OUT ^= LEDT_BIT;
+			  EXPERIMENT = false;
 		  }
 	  }
 }
@@ -103,12 +107,13 @@ ISR(TIMER3_COMPA_vect){
 	  if(FREQCOUNTER>MAXFREQCOUNT){
 		  *FREQ_OUT ^= FREQ_BIT;
 		  FREQCOUNTER=0;
-		  if((STIM_COUNTER>F_ONE_MAX)&&((*FREQ_OUT)==FREQ_BIT)){
+		  if((STIM_COUNTER>F_ONE_MAX) && ((*FREQ_OUT)==FREQ_BIT) && EXPERIMENT){
 			  MAXFREQINDEX=1;
 			  //MAXFREQINDEX^=1;
 			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
 			  STIM_COUNTER = 0;
 			  *LEDT_OUT ^= LEDT_BIT;
+			  EXPERIMENT = false;
 		  }
 	  }
 }
@@ -187,6 +192,8 @@ int executecommand(char *buffer){
 			dtostrf(NEWMAXFREQCOUNT,5,1,str_buf);
 			Serial.write(str_buf);
 			MAXFREQCOUNTS[0] = NEWMAXFREQCOUNT  ;
+			MAXFREQCOUNT = MAXFREQCOUNTS[0];
+			MAXFREQINDEX = 0;
 			return 1;
 		case 'H':
 			FREQ = atoi(++buffer);
@@ -201,8 +208,7 @@ int executecommand(char *buffer){
 			if(!((*GREENR) == 0)) sbi(TCCR3A, COM3A1);
 			if(!((*REDR) == 0)) sbi(TCCR1A, COM1B1);
 			STIM_COUNTER = 0;
-			MAXFREQCOUNT = MAXFREQCOUNTS[0];
-			MAXFREQINDEX = 0;
+			EXPERIMENT = true;
 			*LEDT_OUT ^= LEDT_BIT;
 			return 1;
 		case 'X':
