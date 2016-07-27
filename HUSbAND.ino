@@ -57,6 +57,10 @@ uint8_t LEDT_BIT;
 uint8_t LEDT_PORT;
 volatile uint8_t *LEDT_OUT;
 
+uint8_t STIMT_BIT;
+uint8_t STIMT_PORT;
+volatile uint8_t *STIMT_OUT;
+
 
 /* Interrupt Service Routines
  * The ISR of the timer with the highest pwm duty cycle is executed
@@ -81,6 +85,7 @@ ISR(TIMER1_COMPB_vect){
 			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
 			  STIM_COUNTER=0;
 			  *LEDT_OUT ^= LEDT_BIT;
+			  *STIMT_OUT ^= STIMT_BIT;
 			  EXPERIMENT = false;
 		  }
 	  }
@@ -97,6 +102,7 @@ ISR(TIMER1_COMPA_vect){
 			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
 			  STIM_COUNTER = 0;
 			  *LEDT_OUT ^= LEDT_BIT;
+			  *STIMT_OUT ^= STIMT_BIT;
 			  EXPERIMENT = false;
 		  }
 	  }
@@ -113,6 +119,7 @@ ISR(TIMER3_COMPA_vect){
 			  MAXFREQCOUNT = MAXFREQCOUNTS[MAXFREQINDEX];
 			  STIM_COUNTER = 0;
 			  *LEDT_OUT ^= LEDT_BIT;
+			  *STIMT_OUT ^= STIMT_BIT;
 			  EXPERIMENT = false;
 		  }
 	  }
@@ -210,6 +217,7 @@ int executecommand(char *buffer){
 			STIM_COUNTER = 0;
 			EXPERIMENT = true;
 			*LEDT_OUT ^= LEDT_BIT;
+			*STIMT_OUT ^= STIMT_BIT;
 			return 1;
 		case 'X':
 			cbi(TCCR1A, COM1A1);
@@ -289,6 +297,11 @@ void setup()
 	  LEDT_BIT = digitalPinToBitMask(LED_TRIG_PIN);
 	  LEDT_PORT = digitalPinToPort(LED_TRIG_PIN);
 	  LEDT_OUT = portOutputRegister(LEDT_PORT);
+
+	  STIMT_BIT = digitalPinToBitMask(STIM_TRIG_PIN);
+	  STIMT_PORT = digitalPinToPort(STIM_TRIG_PIN);
+	  STIMT_OUT = portOutputRegister(STIMT_PORT);
+	  *STIMT_OUT ^= STIMT_BIT;
 
 	  //leds off by default
 	  cbi(TCCR1A, COM1A1);
