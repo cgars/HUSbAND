@@ -20,8 +20,8 @@ Command Letter | Values | Function
 R|0-1023|Red leds
 G|0-1023|Green leds
 B|0-1023|Blue leds
-F|0-15kHZ|Frequency1
-H|0-15kHz|Frequency2
+F|0-15000HZ|Frequency1
+H|0-15000Hz|Frequency2
 T|0-99999|Time in ms between onset of freq1 and freq2
 S||Start the Device
 X||Stop the Device
